@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
+from app.config import settings
 from app.db import get_db
 from app.models import QueryLog
 
@@ -9,12 +10,15 @@ from app.models import QueryLog
 router = APIRouter()
 
 
-EMBEDDING_COST_PER_1K = 0.00002
+# Public price list in USD per 1M tokens, used when the Anthropic provider
+# is active. Local (Ollama) runs report $0.
 HAIKU_IN_COST_PER_1M = 1.00
 HAIKU_OUT_COST_PER_1M = 5.00
 
 
 def _estimated_cost(input_tokens: int, output_tokens: int) -> float:
+    if settings.llm_provider == "ollama":
+        return 0.0
     return (
         input_tokens / 1_000_000 * HAIKU_IN_COST_PER_1M
         + output_tokens / 1_000_000 * HAIKU_OUT_COST_PER_1M
@@ -31,6 +35,8 @@ def stats(db: Session = Depends(get_db)):
     ).one()
     count, avg_latency, in_tokens, out_tokens = row
     return {
+        "provider": settings.llm_provider,
+        "model": settings.ollama_llm_model if settings.llm_provider == "ollama" else settings.anthropic_model,
         "query_count": int(count),
         "avg_latency_ms": round(float(avg_latency), 1),
         "total_input_tokens": int(in_tokens),
