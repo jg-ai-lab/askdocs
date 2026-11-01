@@ -50,13 +50,13 @@ be measured and optimized — not left to vibes.
 
 ## Roadmap
 
-- [ ] Day 1: Repo + Postgres+pgvector + ingest pipeline
-- [ ] Day 2: `/ingest` + `/query` endpoints, hybrid search
-- [ ] Day 3: Next.js UI + streaming (SSE)
-- [ ] Day 4: Citations + conversation history
-- [ ] Day 5: Admin dashboard + usage logging
-- [ ] Day 6: Deploy + custom domain + demo video
-- [ ] Day 7: Eval harness + README polish
+- [x] Day 1: Repo + Postgres+pgvector + ingest pipeline
+- [x] Day 2: `/ingest` + `/query` endpoints, cosine retrieval
+- [x] Day 3: Next.js UI + streaming (SSE)
+- [x] Day 4: Admin dashboard (docs list, upload, stats) + query logging
+- [x] Day 5: Dockerfile + Railway config + eval harness scaffold
+- [ ] Day 6: Hybrid search (BM25 + vector), citation UI polish
+- [ ] Day 7: Deploy + custom domain + demo video + eval run on real corpus
 
 ## Local development
 

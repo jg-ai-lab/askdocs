@@ -1,0 +1,20 @@
+# Eval question set. Each entry maps a question to the DOCUMENT TITLES
+# that are expected to appear in the top-K retrieved chunks.
+#
+# Hit rate = fraction of questions where ANY expected title appears
+# in the top-K retrieved documents.
+#
+# Populate `expected_titles` with the exact `title` field used when
+# ingesting the document (filename for PDF uploads).
+
+questions:
+  - question: "How does the chunking strategy handle overlapping tokens?"
+    expected_titles: ["README.md"]
+  - question: "What embedding model does the system use by default?"
+    expected_titles: ["README.md"]
+  - question: "What is the target p95 latency for a query?"
+    expected_titles: ["README.md"]
+  - question: "What database stores the embeddings?"
+    expected_titles: ["README.md"]
+  - question: "How are source citations shown in the answer?"
+    expected_titles: ["README.md"]

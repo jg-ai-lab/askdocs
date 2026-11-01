@@ -1,4 +1,3 @@
-import json
 from typing import Iterator
 
 from anthropic import Anthropic
@@ -14,7 +13,7 @@ If the context does not contain the answer, say "I don't know based on the provi
 Cite sources inline using [chunk_id] after any factual claim."""
 
 
-def stream_answer(question: str, context: list[dict]) -> Iterator[bytes]:
+def stream_answer_tracked(question: str, context: list[dict]) -> Iterator[dict]:
     ctx_block = "\n\n".join(f"[{c['id']}]\n{c['content']}" for c in context)
     user = f"Context:\n{ctx_block}\n\nQuestion: {question}"
 
@@ -25,5 +24,11 @@ def stream_answer(question: str, context: list[dict]) -> Iterator[bytes]:
         messages=[{"role": "user", "content": user}],
     ) as stream:
         for text in stream.text_stream:
-            yield f"data: {json.dumps({'delta': text})}\n\n".encode()
-        yield f"data: {json.dumps({'done': True, 'sources': [c['id'] for c in context]})}\n\n".encode()
+            yield {"delta": text}
+        final = stream.get_final_message()
+        yield {
+            "usage": {
+                "input_tokens": final.usage.input_tokens,
+                "output_tokens": final.usage.output_tokens,
+            }
+        }
