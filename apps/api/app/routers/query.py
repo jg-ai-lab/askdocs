@@ -6,11 +6,11 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
-from app.config import settings
 from app.db import SessionLocal, get_db
-from app.models import Chunk, QueryLog
+from app.models import QueryLog
 from app.services.embeddings import embed_one
 from app.services.llm import stream_answer_tracked
+from app.services.retrieval import hybrid_search
 
 
 router = APIRouter()
@@ -23,13 +23,8 @@ class QueryRequest(BaseModel):
 @router.post("")
 def query(req: QueryRequest, db: Session = Depends(get_db)):
     q_emb = embed_one(req.question)
-    rows = (
-        db.query(Chunk)
-        .order_by(Chunk.embedding.cosine_distance(q_emb))
-        .limit(settings.top_k)
-        .all()
-    )
-    context = [{"id": str(c.id), "content": c.content, "doc_id": str(c.document_id)} for c in rows]
+    chunks = hybrid_search(db, req.question, q_emb)
+    context = [{"id": str(c.id), "content": c.content, "doc_id": str(c.document_id)} for c in chunks]
 
     def event_stream():
         start = time.perf_counter()

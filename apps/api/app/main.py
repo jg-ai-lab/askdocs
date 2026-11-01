@@ -8,15 +8,27 @@ from app.db import Base, engine
 from app.routers import documents, ingest, query, stats
 
 
+MIGRATIONS = [
+    "CREATE EXTENSION IF NOT EXISTS vector",
+    "ALTER TABLE chunks ADD COLUMN IF NOT EXISTS content_tsv tsvector "
+    "GENERATED ALWAYS AS (to_tsvector('english', content)) STORED",
+    "CREATE INDEX IF NOT EXISTS idx_chunks_content_tsv "
+    "ON chunks USING gin(content_tsv)",
+]
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     with engine.begin() as conn:
         conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
     Base.metadata.create_all(bind=engine)
+    with engine.begin() as conn:
+        for stmt in MIGRATIONS:
+            conn.execute(text(stmt))
     yield
 
 
-app = FastAPI(title="DocuChat API", version="0.2.0", lifespan=lifespan)
+app = FastAPI(title="DocuChat API", version="0.3.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,

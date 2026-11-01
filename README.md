@@ -55,7 +55,7 @@ be measured and optimized — not left to vibes.
 - [x] Day 3: Next.js UI + streaming (SSE)
 - [x] Day 4: Admin dashboard (docs list, upload, stats) + query logging
 - [x] Day 5: Dockerfile + Railway config + eval harness scaffold
-- [ ] Day 6: Hybrid search (BM25 + vector), citation UI polish
+- [x] Day 6: Hybrid search (BM25 + vector) with RRF fusion
 - [ ] Day 7: Deploy + custom domain + demo video + eval run on real corpus
 
 ## Local development
