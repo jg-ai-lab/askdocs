@@ -32,8 +32,8 @@ be **measured and optimized** — not left to vibes.
 
 | Layer | Default (local, $0) | Opt-in (cloud, paid) |
 |---|---|---|
-| LLM | Ollama + Qwen 2.5 7B | Anthropic Claude Haiku 4.5 |
-| Embeddings | Ollama + nomic-embed-text | OpenAI text-embedding-3-small |
+| LLM | Ollama + Qwen 3 8B | Anthropic Claude Haiku 4.5 |
+| Embeddings | Ollama + bge-m3 (multilingual) | OpenAI text-embedding-3-small |
 | Vector DB | Postgres + pgvector | same |
 | Full-text | Postgres `tsvector` + GIN | same |
 | Backend | FastAPI, SQLAlchemy, Pydantic | same |
@@ -58,9 +58,9 @@ Flip providers via env vars — no code changes required.
 **Prerequisites**: Docker, Python 3.12+, Node 18+, [Ollama](https://ollama.com/download)
 
 ```bash
-# 1. Install the local models (one-time; ~5 GB download)
-ollama pull qwen2.5:7b
-ollama pull nomic-embed-text
+# 1. Install the local models (one-time; ~6.4 GB download)
+ollama pull qwen3:8b
+ollama pull bge-m3
 
 # 2. Start the vector DB
 docker compose up -d
@@ -88,7 +88,7 @@ That's it. No API keys. No bills. Everything runs on your laptop.
 | Setup | Experience |
 |---|---|
 | 16 GB RAM, Apple Silicon or recent NVIDIA | Smooth, 20–40 tok/s |
-| 8 GB RAM, CPU-only | Works with `qwen2.5:3b` instead — change `OLLAMA_LLM_MODEL` |
+| 8 GB RAM, CPU-only | Works with `qwen3:4b` instead — change `OLLAMA_LLM_MODEL` |
 | < 8 GB RAM | Use `llama3.2:1b` or switch to the cloud path below |
 
 ## Cloud path — opt-in (paid)

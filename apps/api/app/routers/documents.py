@@ -6,9 +6,16 @@ from sqlalchemy.orm import Session
 
 from app.db import get_db
 from app.models import Chunk, Document
+from app.services.storage import presigned_download_url
 
 
 router = APIRouter()
+
+
+def _download_url(source: str) -> str | None:
+    if source.startswith("s3://"):
+        return presigned_download_url(source[len("s3://"):])
+    return None
 
 
 @router.get("")
@@ -27,6 +34,7 @@ def list_documents(db: Session = Depends(get_db)):
             "source": doc.source,
             "chunks": count,
             "created_at": doc.created_at.isoformat(),
+            "download_url": _download_url(doc.source),
         }
         for doc, count in rows
     ]

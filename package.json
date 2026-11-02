@@ -1,0 +1,13 @@
+{
+  "name": "askdocs-infra",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Neon infrastructure-as-code for askdocs",
+  "scripts": {
+    "neon:plan": "neon config plan",
+    "neon:deploy": "neon deploy --env .env.local"
+  },
+  "devDependencies": {
+    "@neon/config": "^1.0.0"
+  }
+}
